@@ -18,6 +18,8 @@ const userSchema = new Schema(
       type: String,
       required: [true, "Name is required."],
     },
+    historyCompasses: [{ type: Schema.Types.ObjectId, ref: "CompassHistory" }],
+    futureCompasses: [{ type: Schema.Types.ObjectId, ref: "CompassFuture" }],
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`
