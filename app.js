@@ -21,7 +21,12 @@ app.use("/api", indexRoutes);
 const authRoutes = require("./routes/auth.routes");
 app.use("/auth", authRoutes);
 
-// ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
+const compassRoutes = require("./routes/compass.routes");
+app.use("/api", compassRoutes);
+
+const projectRouter = require("./routes/project.routes"); // <== IMPORT
+app.use("/api", projectRouter); // <== ADD
+
 require("./error-handling")(app);
 
 module.exports = app;
