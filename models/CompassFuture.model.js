@@ -1,27 +1,15 @@
 const { Schema, model } = require("mongoose");
 
-const compassFutureSchema = new Schema(
-  {
-    user: { type: Schema.Types.ObjectId, ref: "User" },
-    futureTitle: {
-      type: String,
-      required: [true, "Title is required."],
-      unique: true,
-    },
-    futureYear: {
-      type: Number,
-      required: [true, "Year is required."],
-      unique: true,
-    },
-    dreamsNextYear: {
-      type: String,
-    },
+const compassFutureSchema = new Schema({
+  compass: { type: Schema.Types.ObjectId, ref: "Compass" },
+  compassHistory: { type: Schema.Types.ObjectId, ref: "CompassHistory" },
+  futureYear: {
+    type: Number,
   },
-  {
-    // this second object adds extra properties: `createdAt` and `updatedAt`
-    timestamps: true,
-  }
-);
+  dreamsNextYear: {
+    type: String,
+  },
+});
 
 const compassFuture = model("CompassFuture", compassFutureSchema);
 

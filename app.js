@@ -24,9 +24,6 @@ app.use("/auth", authRoutes);
 const compassRoutes = require("./routes/compass.routes");
 app.use("/api", compassRoutes);
 
-const projectRouter = require("./routes/project.routes"); // <== IMPORT
-app.use("/api", projectRouter); // <== ADD
-
 require("./error-handling")(app);
 
 module.exports = app;
