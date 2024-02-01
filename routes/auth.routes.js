@@ -107,10 +107,10 @@ router.post("/login", (req, res, next) => {
         res.status(401).json({ message: "Unable to authenticate the user" });
       }
     })
-    .catch((err) => next(err)); // In this case, we send error handling to the error handling middleware.
+    .catch((err) => next(err)); // Error handling to the error handling middleware.
 });
 
-// GET  /auth/verify  -  Used to verify JWT stored on the client
+// GET  /auth/verify  -  To verify JWT stored on the client
 router.get("/verify", isAuthenticated, (req, res, next) => {
   // If JWT token is valid the payload gets decoded by the
   // isAuthenticated middleware and is made available on `req.payload`
