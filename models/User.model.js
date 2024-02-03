@@ -19,6 +19,4 @@ const userSchema = new Schema({
   compasses: [{ type: Schema.Types.ObjectId, ref: "Compass" }],
 });
 
-const User = model("User", userSchema);
-
-module.exports = User;
+module.exports = model("User", userSchema);
