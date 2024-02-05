@@ -7,10 +7,9 @@ const Compass = require("../models/Compass.model");
 router.post("/mycompasses", async (req, res, next) => {
   try {
     const { compassTitle, userId } = req.body;
-
     const newCompass = await Compass.create({
       compassTitle,
-      userId: userId,
+      user: userId,
     });
 
     await User.findByIdAndUpdate(userId, {
@@ -25,5 +24,7 @@ router.post("/mycompasses", async (req, res, next) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+router.get("/mycompasses/:userId", async (req, res, next) => {});
 
 module.exports = router;
