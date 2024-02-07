@@ -24,6 +24,7 @@ router.post("/mycompasses", async (req, res, next) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 // route to show all the created compassess in the my-compass page
 router.get("/mycompasses/:userId", async (req, res, next) => {
   const { userId } = req.params;
@@ -43,6 +44,25 @@ router.get("/compass/overview/:compassId", async (req, res, next) => {
     res.json(oneCompassToEdit);
   } catch (err) {
     res.json(err);
+  }
+});
+
+// route to edit the compass
+router.put("/compass/edit/:compassId", async (req, res, next) => {
+  try {
+    const { compassId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(compassId)) {
+      res.status(400).json({ message: "Specified id is not valid" });
+      return;
+    }
+
+    const compassUpdate = await Compass.findByIdAndUpdate(compassId, req.body, {
+      new: true,
+    });
+    res.json(compassUpdate);
+  } catch (error) {
+    res.status(500).json({ error: "internal server error" });
   }
 });
 
