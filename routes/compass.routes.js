@@ -66,4 +66,35 @@ router.put("/compass/edit/:compassId", async (req, res, next) => {
   }
 });
 
+// route to delete the compass:
+router.delete("/compass/delete/:compassId", async (req, res, next) => {
+  const { compassId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(compassId)) {
+    res.status(400).json({ message: "Specified compassId is not valid" });
+    return;
+  }
+
+  try {
+    const deletedCompass = await Compass.findByIdAndDelete(compassId);
+
+    if (!deletedCompass) {
+      res.status(400).json({ message: "Compass not found" });
+      return;
+    }
+
+    const userId = deletedCompass.userId;
+    console.log("user ...", userId);
+    await User.findByIdAndUpdate(userId, { $pull: { compasses: compassId } });
+
+    res.json({
+      message: `compass with ID ${compassId} is deleted succesfully`,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Internal server error during deleting compass" });
+  }
+});
+
 module.exports = router;
