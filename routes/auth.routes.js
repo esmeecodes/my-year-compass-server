@@ -8,6 +8,7 @@ const User = require("../models/User.model");
 
 // Require necessary (isAuthenticated) middleware in order to control access to specific routes
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
+const { route } = require("./compass.routes.js");
 
 const saltRounds = 10;
 
@@ -108,6 +109,23 @@ router.post("/login", (req, res, next) => {
       }
     })
     .catch((err) => next(err)); // Error handling to the error handling middleware.
+});
+
+router.delete("/delete-account/:userId", (res, req, next) => {
+  const { userId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    res.status(400).json({ message: "Specified id is not valid" });
+    return;
+  }
+
+  User.findByIdAndDelete(userId)
+    .then(() =>
+      res.json({
+        message: `User with ${userId} is removed successfully.`,
+      })
+    )
+    .catch((error) => res.json(error));
 });
 
 // GET  /auth/verify  -  To verify JWT stored on the client
