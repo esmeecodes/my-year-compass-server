@@ -17,6 +17,7 @@ const userSchema = new Schema({
     required: [true, "Username is required."],
   },
   compasses: [{ type: Schema.Types.ObjectId, ref: "Compass" }],
+  futureCompasses: [{ type: Schema.Types.ObjectId, ref: "FutureCompass" }],
 });
 
 module.exports = model("User", userSchema);

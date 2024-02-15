@@ -3,9 +3,10 @@ const mongoose = require("mongoose");
 
 const User = require("../models/User.model");
 const Compass = require("../models/Compass.model");
+const FutureCompass = require("../models/FutureCompass.model");
 const { isAuthenticated } = require("../middleware/jwt.middleware");
 
-// route to create the compass
+// route to create the two compass parts at the same time (future + past)
 router.post("/mycompasses", async (req, res, next) => {
   try {
     const { compassTitle, userId } = req.body;
@@ -14,8 +15,16 @@ router.post("/mycompasses", async (req, res, next) => {
       user: userId,
     });
 
+    const newFutureCompass = await FutureCompass.create({
+      compassTitle,
+      user: userId,
+    });
+
     await User.findByIdAndUpdate(userId, {
-      $push: { compasses: newCompass._id },
+      $push: {
+        compasses: newCompass._id,
+        futureCompasses: newFutureCompass._id,
+      },
     });
 
     res.json(newCompass);

@@ -2,13 +2,9 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
-// Require the User model in order to interact with the database
 const User = require("../models/User.model");
-
-// Require necessary (isAuthenticated) middleware in order to control access to specific routes
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
-const { route } = require("./compass.routes.js");
+const mongoose = require("mongoose");
 
 const saltRounds = 10;
 
@@ -111,7 +107,7 @@ router.post("/login", (req, res, next) => {
     .catch((err) => next(err)); // Error handling to the error handling middleware.
 });
 
-router.delete("/delete-account/:userId", (res, req, next) => {
+router.delete("/delete/:userId", (req, res, next) => {
   const { userId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(userId)) {
@@ -126,6 +122,32 @@ router.delete("/delete-account/:userId", (res, req, next) => {
       })
     )
     .catch((error) => res.json(error));
+});
+
+router.put("/account/edit/:userId", async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      res
+        .status(400)
+        .json({ message: "Specified id is not connected to a user" });
+      return;
+    }
+
+    if (req.body === "") {
+      res.status(400).json({ message: "Provide a new password or email." });
+      return;
+    }
+
+    const userUpdated = await User.findByIdAndUpdate(userId, req.body, {
+      new: true,
+    });
+
+    res.json(userUpdated);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error on changing email" });
+  }
 });
 
 // GET  /auth/verify  -  To verify JWT stored on the client
