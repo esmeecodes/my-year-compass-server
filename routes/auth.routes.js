@@ -135,12 +135,50 @@ router.put("/account/edit/:userId", async (req, res, next) => {
       return;
     }
 
-    if (req.body === "") {
-      res.status(400).json({ message: "Provide a new password or email." });
-      return;
+    const { username, email, password, oldpassword } = req.body;
+
+    const user = await User.findById(userId);
+    console.log(userId);
+
+    const updatedFields = {};
+
+    if (email !== undefined && email !== "") {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+      if (!emailRegex.test(email)) {
+        res.status(400).json({ message: "Provide a valid email address." });
+        return;
+      }
+      updatedFields.email = email;
     }
 
-    const userUpdated = await User.findByIdAndUpdate(userId, req.body, {
+    if (password !== undefined && password !== "") {
+      const passwordCorrect = bcrypt.compareSync(oldpassword, user.password);
+      if (!passwordCorrect) {
+        res.status(400).json({ message: "Current password is incorrect" });
+        return;
+      }
+
+      const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
+      if (!passwordRegex.test(password)) {
+        res.status(400).json({
+          message:
+            "Password must have at least 6 characters and contain at least one number, one lowercase and one uppercase letter.",
+        });
+        return;
+      }
+
+      const salt = bcrypt.genSaltSync(saltRounds);
+      const hashedPassword = bcrypt.hashSync(password, salt);
+
+      updatedFields.password = hashedPassword;
+    }
+
+    if (username !== undefined && username !== "") {
+      updatedFields.username = username;
+    }
+
+    const userUpdated = await User.findByIdAndUpdate(userId, updatedFields, {
       new: true,
     });
 
