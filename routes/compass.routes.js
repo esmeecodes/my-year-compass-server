@@ -9,9 +9,10 @@ const { isAuthenticated } = require("../middleware/jwt.middleware");
 // route to create the two compass parts at the same time (future + past)
 router.post("/mycompasses", async (req, res, next) => {
   try {
-    const { compassTitle, userId } = req.body;
+    const { compassTitle, compassYear, userId } = req.body;
     const newCompass = await Compass.create({
       compassTitle,
+      compassYear,
       user: userId,
     });
 
@@ -51,6 +52,17 @@ router.get("/compass/overview/:compassId", async (req, res, next) => {
   try {
     const oneCompassToEdit = await Compass.findById(compassId);
     res.json(oneCompassToEdit);
+  } catch (err) {
+    res.json(err);
+  }
+});
+
+// route to show the compass in the show & print page
+router.get("/compass/show/:compassId", async (req, res, next) => {
+  const { compassId } = req.params;
+  try {
+    const showCompass = await Compass.findById(compassId);
+    res.json(showCompass);
   } catch (err) {
     res.json(err);
   }

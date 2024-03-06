@@ -11,6 +11,11 @@ const compassSchema = new Schema({
     type: String,
     required: [true, "Title is required."],
   },
+  compassYear: {
+    type: Number,
+    required: [true, "Compass year is required."],
+    unique: [true, "You can only create one compass every year"],
+  },
   lastYearInMonths: String,
   pastPersonal: String,
   pastCareer: String,
